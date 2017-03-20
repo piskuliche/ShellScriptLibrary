@@ -1,0 +1,36 @@
+#MSUB -S /bin/bash
+#MSUB -N BBB.run1
+#MSUB -q sixhour
+#MSUB -l nodes=1:ppn=DDD:intel
+#MSUB -l walltime=00:06:00:00
+#MSUB -j oe
+#MSUB -o BBB-1.joblog
+#MSUB -d ./
+
+# Save job specific info for troubleshooting
+echo "This is a sequential job created by sequentialjob.sh"
+echo "The following processors are allocated to this job:"
+echo $(cat $PBS_NODEFILE)
+
+module load legacy
+module load intel_compiler
+export OMP_NUM_THREADS=DDD
+
+echo "Start: $(date +%F_%T)"
+
+if [ "1" .eq. "1" ]; then
+    timeout 5h time Cassandra_1.2.4.exe 
+else
+    timeout 5h time Cassandra_1.2.4.exe
+fi
+
+echo "End: $(date +%F_%T)"
+
+# Clean Up Scripts
+mkdir run-1
+gzip *xyz *log
+mv *gz *xyz *prp *H *log *sh run-1/
+cp *chk run-1/
+
+
+
